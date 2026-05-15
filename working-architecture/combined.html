@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Combined</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #101010;
+    height: 100%;
+    overflow: hidden;
+  }
+  .wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    gap: 0;
+  }
+  iframe {
+    display: block;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    width: 600px;
+    height: 500px;
+  }
+  #top { position: relative; width: 600px; height: 500px; }
+  #top iframe {
+    position: absolute;
+    transition: opacity 0.4s ease;
+  }
+  #orb { left: 0; top: 0; width: 600px; height: 500px; }
+  #hand { margin-top: -320px; }
+  #stack {
+    width: 760px;
+    height: 480px;
+    left: 50%;
+    top: calc(50% + 20px);
+    transform: translate(-50%, -50%);
+  }
+  .hidden { opacity: 0; pointer-events: none; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="top">
+      <iframe id="orb" src="orb.html" scrolling="no"></iframe>
+      <iframe id="stack" src="stack.html" scrolling="no" class="hidden"></iframe>
+    </div>
+    <iframe id="hand" src="hand.html" scrolling="no"></iframe>
+  </div>
+  <script>
+    (function () {
+      var orb = document.getElementById('orb');
+      var stack = document.getElementById('stack');
+      function showStack() {
+        orb.classList.add('hidden');
+        stack.classList.remove('hidden');
+        setTimeout(showOrb, 10000);
+      }
+      function showOrb() {
+        stack.classList.add('hidden');
+        orb.classList.remove('hidden');
+        setTimeout(showStack, 4000);
+      }
+      setTimeout(showStack, 4000);
+      function sendPV(){ try{ stack.contentWindow.postMessage({t:'pv',w:innerWidth,h:innerHeight},'*'); }catch(e){} }
+      stack.addEventListener('load', sendPV);
+      window.addEventListener('resize', sendPV);
+      sendPV();
+    })();
+  </script>
+</body>
+</html>
